@@ -3,18 +3,19 @@ from flask_restful import Resource, reqparse, abort
 
 from app.services.todoService import TODOS
 
-from app.utils.utils import returnJson
+from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
 
 class TodoListResource(Resource):
 
     def get(self):
-        return returnJson(200, 'success', TODOS)
+        return sendSuccess(TODOS)
 
 
 class TodoListByIdResource(Resource):
 
     def get(self, list_id: int):
-        return 'get - /lists/list_id' + str(list_id)
+        res = next((todo for todo in TODOS if todo['id'] == list_id), None)
+        return sendSuccess(res) if res else sendErrorNotFound({'list_id': list_id})
 
     def put(self,list_id: int):
         return 'put - /lists/list_id'
