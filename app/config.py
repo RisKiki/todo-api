@@ -1,3 +1,5 @@
+import os
+
 env = "DEVELOPMENT"
 PRODUCTION_SERVER= "172.17.4.154" # Un exemple
 API_NAME = "Flask API TODO"
@@ -5,6 +7,9 @@ APP_VERSION = "1.0"
 
 class BaseConfig(object):
     DEBUG = True
+    #MONGO Configuration
+    MONGODB_HOST = os.environ['MONGO_URI']
+
 
 class DevelopmentConfig(BaseConfig):
     # SWAGGER Configuration

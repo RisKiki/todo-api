@@ -1,3 +1,6 @@
+from bson import json_util
+import json
+
 def sendJson(status : int, message : str, data : any):
     return {
         'status': status,
@@ -25,3 +28,7 @@ def sendError(error_id : int, error_message : str, data : any):
         'message': 'success',
         'data' : data
     }
+
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
