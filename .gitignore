@@ -1,4 +1,6 @@
 /venv
+/app/__pycache__
 /resources/__pycache__
 /services/__pycache__
 __pycache__
+lancer-appli
