@@ -2,13 +2,14 @@ from flask import request
 from flask_restful import Resource, reqparse, abort
 
 from app.services.todoService import TODOS
+from app.models import Todo
 
 from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
 
 class TodoListResource(Resource):
 
     def get(self):
-        return sendSuccess(TODOS)
+        return sendSuccess(list(map(lambda todo: todo.asJson(), Todo.objects())))
 
 
 class TodoListByIdResource(Resource):
