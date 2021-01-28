@@ -15,7 +15,7 @@ class AccountResource(Resource):
 
         try:
             user = User(username=args['username'],password=args['password']).save()
-            return sendSuccess({'id':str(user.id)})
+            return sendSuccess({'user' : user.asJson()})
         except Exception as err:
             return sendJson(400,str(err),args)
         

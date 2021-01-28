@@ -24,8 +24,8 @@ def sendErrorNotFound(data : any):
 
 def sendError(error_id : int, error_message : str, data : any):
     return {
-        'status': 200,
-        'message': 'success',
+        'status': error_id,
+        'message': error_message,
         'data' : data
     }
 
