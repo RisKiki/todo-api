@@ -1,16 +1,28 @@
 from app.db import db
 
-import mongoengine_goodjson as gj
-
-class Todo(gj.Document):
+class Todo(db.Document):
     name = db.StringField(required=True)
+    description = db.StringField(required=True)
     created_on = db.DateTimeField(required=True)
 
     def asJson(self):
         return {
             "id":str(self.id),
             "name":self.name,
-            "created_on":self.created_on
+            "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
+        }
+
+class TodoList(db.Document):
+    name = db.StringField(required=True)
+    todo_list = db.ListField(db.ReferenceField('Todo'))
+    created_on = db.DateTimeField(required=True)
+
+    def asJson(self):
+        return {
+            "id":str(self.id),
+            "name":self.name,
+            "todo_list" :dict(map(lambda todo: todo.asJson(), self.todo_list)),
+            "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
         }
 
 class User(db.Document):

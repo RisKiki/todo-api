@@ -43,9 +43,9 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 print("Routes :")
 print('/account : POST 🍏') 
 print('/login : POST 🔴') 
-print('/lists : GET 🍏')
-print('/lists/<int:list_id> : GET 🔴 | PUT 🔴 | DELETE 🔴 | PATCH 🔴')
-print('/lists/todos/<int:list_id>/<int:todo_id> : GET 🔴 | PUT 🔴 | DELETE 🔴 | PATCH 🔴')
-print('/lists/todos/<int:id_list> : GET 🔴')
+print('/lists : GET 🍏 | PUT 🍏')
+print('/lists/<int:list_id> : GET 🔴 | DELETE 🔴 | PATCH 🔴')
+print('/lists/todos/<int:list_id>/<int:todo_id> : GET 🔴  | DELETE 🔴 | PATCH 🔴')
+print('/lists/todos/<int:id_list> : GET 🔴 | PUT 🔴')
 
 app.register_blueprint(swaggerui_blueprint, url_prefix=conf.SWAGGER_URL)
