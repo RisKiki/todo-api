@@ -9,7 +9,13 @@ from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
 class TodoListResource(Resource):
 
     def get(self):
-        return sendSuccess(list(map(lambda todoList: todoList.asJson(), TodoList.objects())))
+        try:
+            liste = list(map(lambda todoList: todoList.asJson(), TodoList.objects()))
+            return sendSuccess(liste)
+            print(liste)
+        except Exception as e:
+            print(str(e))
+        
 
     def put(self):
         body_parser = reqparse.RequestParser(bundle_errors=True)
@@ -21,13 +27,13 @@ class TodoListResource(Resource):
                 todo_list = TodoList(
                     name=args['name'],
                     todo_list=args['todo_list'],
-                    created_on=datetime.today().strftime("%d/%m/%Y %H:%M:%S.%f")
+                    created_on=datetime.today()
                 ).save()
             else :
                 todo_list = TodoList(
                     name=args['name'],
                     todo_list=[],
-                    created_on=datetime.today().strftime("%d/%m/%Y %H:%M:%S.%f")
+                    created_on=datetime.today()
                 ).save()
             return sendSuccess({'todo_list' : todo_list.asJson()})
         except Exception as err:
@@ -57,6 +63,9 @@ class TodoListByIdResource(Resource):
 
             if todo_list is None:
                 return sendErrorNotFound({"message" : "todo_list id not found"})
+
+            for todo in todo_list.todo_list:
+                todo.delete()
 
             todo_list.delete()
             return sendSuccess({'todo_list_id' : list_id})

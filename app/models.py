@@ -64,7 +64,6 @@ class User(db.Document):
     
     @staticmethod
     def verify_hash(password, hash):
-        print(password, hash)
         return sha256_crypt.verify(password, hash)
 
 
