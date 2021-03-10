@@ -13,6 +13,7 @@ class Todo(db.Document):
         return {
             "id":str(self.id),
             "name":self.name,
+            "description":self.description,
             "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
         }
 
@@ -25,7 +26,7 @@ class TodoList(db.Document):
         return {
             "id":str(self.id),
             "name":self.name,
-            "todo_list" :dict(map(lambda todo: todo.asJson(), self.todo_list)),
+            "todo_list" :list(map(lambda todo: todo.asJson(), self.todo_list)),
             "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
         }
 

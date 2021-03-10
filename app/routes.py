@@ -16,8 +16,8 @@ api.add_resource(TodoListResource, '/lists')
 api.add_resource(TodoListByIdResource, '/lists/<string:list_id>')
 
 # Todo
-api.add_resource(TodoResource, '/lists/todos/<string:list_id>/<string:todo_id>')
-api.add_resource(TodoByIdResource, '/lists/todos/<string:id_list>')
+api.add_resource(TodoResource, '/lists/todos/<string:list_id>')
+api.add_resource(TodoByIdResource, '/lists/todos/<string:list_id>/<string:todo_id>')
 
 
 

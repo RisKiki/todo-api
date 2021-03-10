@@ -36,18 +36,21 @@ class TodoListResource(Resource):
 
 class TodoListByIdResource(Resource):
 
-    def get(self, list_id: int):
-        if len(str(list_id)) != 24:
+    def get(self, list_id: str):
+        if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
             todo_list = TodoList.objects(id=list_id).first()
 
-            return sendSuccess({'todo_list' : todo_list.asJson() if todo_list is not None else ""})
+            if todo_list is None:
+                return sendErrorNotFound({"message" : "todo_list id not found"})
+
+            return sendSuccess({'todo_list' : todo_list.asJson()})
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
-    def delete(self, list_id: int):
-        if len(str(list_id)) != 24:
+    def delete(self, list_id: str):
+        if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
             todo_list = TodoList.objects(id=list_id).first()
@@ -60,13 +63,13 @@ class TodoListByIdResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
-    def patch(self, list_id: int):
+    def patch(self, list_id: str):
 
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
         args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
 
-        if len(str(list_id)) != 24:
+        if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
             todo_list = TodoList.objects(id=list_id).first()
