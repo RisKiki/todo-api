@@ -24,12 +24,15 @@ class LoginResource(Resource):
 
         try:
             user = User.objects(
-                username=args['username'],
-                password=args['password']
+                username=args['username']
             ).first()
 
-            if user is None:
+            if user is None :
                 return sendJson(404,"Le mot de passe ou le nom d'utilisateur n'est pas correct", {'username' : args['username']})
+
+            if not User.verify_hash(args['password'], user.password):
+                return sendJson(404,"Le mot de passe ou le nom d'utilisateur n'est pas correct", {'username' : args['username']})
+
             else:
                 token = user.encode_auth_token(user.id)
 

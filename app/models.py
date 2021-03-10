@@ -1,5 +1,6 @@
 from app.db import db
 from app import config
+from passlib.hash import sha256_crypt
 import jwt
 import datetime
 
@@ -55,6 +56,15 @@ class User(db.Document):
             config.SECRET_KEY,
             algorithm='HS256'
         )
+
+    @staticmethod
+    def generate_hash(password):
+        return sha256_crypt.hash(password)    
+    
+    @staticmethod
+    def verify_hash(password, hash):
+        print(password, hash)
+        return sha256_crypt.verify(password, hash)
 
 
     @staticmethod

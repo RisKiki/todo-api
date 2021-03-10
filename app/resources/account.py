@@ -14,7 +14,8 @@ class AccountResource(Resource):
         args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
 
         try:
-            user = User(username=args['username'],password=args['password']).save()
+            hash = User.generate_hash(args['password'])
+            user = User(username=args['username'],password=hash).save()
             return sendSuccess({'user' : user.asJson()})
         except Exception as err:
             return sendJson(400,str(err),args)

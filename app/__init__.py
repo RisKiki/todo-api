@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 from flask_restful import Api
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
-
 from app.db import initialize_db
 
 # Declare the flask app and wrap it in Api
