@@ -4,10 +4,12 @@ from flask_restful import Resource, reqparse, abort
 from datetime import datetime
 from app.models import TodoList, Todo
 
-from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
+from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound, jwt_auth, log_autorized
 
 class TodoResource(Resource):
 
+    @log_autorized
+    @jwt_auth
     def get(self, list_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -24,11 +26,13 @@ class TodoResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
+    @log_autorized
+    @jwt_auth
     def put(self, list_id: str):
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
         body_parser.add_argument('description', type=str, required=True, help="Missing the description of the list")
-        args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
+        args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
 
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -60,6 +64,8 @@ class TodoResource(Resource):
 
 class TodoByIdResource(Resource):
 
+    @log_autorized
+    @jwt_auth
     def get(self, list_id: str, todo_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -83,6 +89,8 @@ class TodoByIdResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
+    @log_autorized
+    @jwt_auth
     def delete(self, list_id: str, todo_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -112,11 +120,13 @@ class TodoByIdResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
+    @log_autorized
+    @jwt_auth
     def patch(self, list_id: str, todo_id: str):
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
         body_parser.add_argument('description', type=str, required=True, help="Missing the description of the list")
-        args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
+        args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
 
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -143,6 +153,3 @@ class TodoByIdResource(Resource):
             return sendSuccess({'todo' : todo.asJson()})
         except Exception as err:
             return sendJson(400,str(err),args)
-
-
-    # Question lucas : 1. les jwt_required | 2. récupere touts les todo d'un liste n'est pas différents de récupère toute la liste ? 

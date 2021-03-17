@@ -3,10 +3,11 @@ from flask_restful import Resource, reqparse, abort
 
 from app.models import User
 
-from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
+from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound, log_unautorized
 
 class AccountResource(Resource):
 
+    @log_unautorized
     def post(self):
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('username', type=str, required=True, help="Missing the login of the user")

@@ -4,23 +4,26 @@ from flask_restful import Resource, reqparse, abort
 from app.models import TodoList
 from datetime import datetime
 
-from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound
+from app.utils.utils import sendJson, sendSuccess, sendErrorNotFound, jwt_auth, log_autorized
+
 
 class TodoListResource(Resource):
 
+    @log_autorized
+    @jwt_auth
     def get(self):
         try:
             liste = list(map(lambda todoList: todoList.asJson(), TodoList.objects()))
             return sendSuccess(liste)
-            print(liste)
         except Exception as e:
-            print(str(e))
-        
+            raise(e)
 
+    @log_autorized  
+    @jwt_auth
     def put(self):
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
-        args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
+        args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
 
         try:
             if 'todo_list' in args:
@@ -42,6 +45,8 @@ class TodoListResource(Resource):
 
 class TodoListByIdResource(Resource):
 
+    @log_autorized
+    @jwt_auth
     def get(self, list_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -55,6 +60,8 @@ class TodoListByIdResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
+    @log_autorized
+    @jwt_auth
     def delete(self, list_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -72,6 +79,8 @@ class TodoListByIdResource(Resource):
         except Exception as err:
             return sendJson(400,str(err),{"list_id":list_id})
 
+    @log_autorized
+    @jwt_auth
     def patch(self, list_id: str):
 
         body_parser = reqparse.RequestParser(bundle_errors=True)

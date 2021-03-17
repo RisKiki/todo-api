@@ -3,9 +3,12 @@ from flask_restful import Api
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from app.db import initialize_db
+from flask_cors import CORS
 
 # Declare the flask app and wrap it in Api
 app = Flask(__name__)
+CORS(app)
+
 api = Api(app)
 
 from app import config
@@ -20,6 +23,7 @@ else:
 app.config.from_object(conf)
 
 initialize_db(app)
+
 
 # Define the route where swagger will find the data to generate /api/docs
 @app.route("/swagger")
