@@ -76,7 +76,9 @@ class TodoListByIdResource(Resource):
 
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
-        args = body_parser.parse_args(strict=True) # Accepted only if these two parameters are strictly declared in body else raise exception
+        args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
+
+        print('DEBUG SALUT 2')
 
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
