@@ -35,7 +35,7 @@ class TodoResource(Resource):
         args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
 
         if len(list_id) != 24:
-            return sendErrorNotFound({"message" : "todo_list id not found"})
+            return sendErrorNotFound({"message" : "todo_list id not found (can't be alive)"})
 
         try:
             todo_list = TodoList.objects(id=list_id).first()
@@ -45,7 +45,7 @@ class TodoResource(Resource):
 
             todo = Todo(
                 name=args['name'],
-                description = args['name'],
+                description = args['description'],
                 created_on=datetime.today()
             ).save()
 
