@@ -11,16 +11,16 @@ class TodoListResource(Resource):
 
     @log_autorized
     @jwt_auth
-    def get(self):
+    def get(self, username):
         try:
-            liste = list(map(lambda todoList: todoList.asJson(), TodoList.objects()))
+            liste = list(map(lambda todoList: todoList.asJson(), TodoList.objects(username=username)))
             return sendSuccess(liste)
         except Exception as e:
             raise(e)
 
     @log_autorized  
     @jwt_auth
-    def put(self):
+    def put(self, username):
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
         args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
@@ -30,12 +30,14 @@ class TodoListResource(Resource):
                 todo_list = TodoList(
                     name=args['name'],
                     todo_list=args['todo_list'],
+                    username=username, 
                     created_on=datetime.today()
                 ).save()
             else :
                 todo_list = TodoList(
                     name=args['name'],
                     todo_list=[],
+                    username=username,
                     created_on=datetime.today()
                 ).save()
             return sendSuccess({'todo_list' : todo_list.asJson()})
@@ -47,11 +49,11 @@ class TodoListByIdResource(Resource):
 
     @log_autorized
     @jwt_auth
-    def get(self, list_id: str):
+    def get(self, username, list_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
-            todo_list = TodoList.objects(id=list_id).first()
+            todo_list = TodoList.objects(id=list_id, username=username).first()
 
             if todo_list is None:
                 return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -62,11 +64,11 @@ class TodoListByIdResource(Resource):
 
     @log_autorized
     @jwt_auth
-    def delete(self, list_id: str):
+    def delete(self, username, list_id: str):
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
-            todo_list = TodoList.objects(id=list_id).first()
+            todo_list = TodoList.objects(id=list_id, username=username).first()
 
             if todo_list is None:
                 return sendErrorNotFound({"message" : "todo_list id not found"})
@@ -81,18 +83,16 @@ class TodoListByIdResource(Resource):
 
     @log_autorized
     @jwt_auth
-    def patch(self, list_id: str):
+    def patch(self, username, list_id: str):
 
         body_parser = reqparse.RequestParser(bundle_errors=True)
         body_parser.add_argument('name', type=str, required=True, help="Missing the name of the list")
         args = body_parser.parse_args(strict=False) # Accepted only if these two parameters are strictly declared in body else raise exception
 
-        print('DEBUG SALUT 2')
-
         if len(list_id) != 24:
             return sendErrorNotFound({"message" : "todo_list id not found"})
         try:
-            todo_list = TodoList.objects(id=list_id).first()
+            todo_list = TodoList.objects(id=list_id, username=username).first()
 
             if todo_list is None:
                 return sendErrorNotFound({"message" : "todo_list id not found"})

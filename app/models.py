@@ -7,6 +7,7 @@ import datetime
 class Todo(db.Document):
     name = db.StringField(required=True)
     description = db.StringField(required=True)
+    username = db.StringField(required=True)
     created_on = db.DateTimeField(required=True)
 
     def asJson(self):
@@ -14,12 +15,14 @@ class Todo(db.Document):
             "id":str(self.id),
             "name":self.name,
             "description":self.description,
+            "username" : self.username,
             "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
         }
 
 class TodoList(db.Document):
     name = db.StringField(required=True)
     todo_list = db.ListField(db.ReferenceField('Todo'))
+    username = db.StringField(required=True)
     created_on = db.DateTimeField(required=True)
 
     def asJson(self):
@@ -27,6 +30,7 @@ class TodoList(db.Document):
             "id":str(self.id),
             "name":self.name,
             "todo_list" :list(map(lambda todo: todo.asJson(), self.todo_list)),
+            "username" : self.username,
             "created_on":self.created_on.strftime("%d/%m/%Y %H:%M:%S.%f"),
         }
 
@@ -76,7 +80,7 @@ class User(db.Document):
         """
         try:
             payload = jwt.decode(auth_token, config.SECRET_KEY, algorithms=['HS256'])
-            return payload['username']
+            return payload
         except jwt.ExpiredSignatureError as e1:
             raise e1
         except jwt.InvalidTokenError as e2:

@@ -39,16 +39,30 @@ def parse_json(data):
 
 def jwt_auth(f):
   def wrapper(*args, **kwargs):
-    print("DEBUG HEADER", request.headers)
     try :
         token = request.headers['Authorization']
-        username = User.decode_auth_token(token)
+        payload = User.decode_auth_token(token)
+        username = payload['username']
+        password = payload['password']
     except jwt.exceptions.InvalidTokenError:
         return sendJson(403, "Invalid token",{})
     except Exception as e:
         raise(e)
     
-    return f(*args, **kwargs)
+    try:
+        user = User.objects(
+            username=username,
+            password=password
+        ).first()
+
+        if user is None :
+            return sendJson(403, "Invalid token",{})
+
+    # Je veux renvoyer user (ou username) à f
+    except Exception as err:
+        return sendJson(400,str(err),args)
+
+    return f(*args, username, **kwargs)
   return wrapper
 
 def log_autorized(f):
