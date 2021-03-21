@@ -9,7 +9,7 @@ SECRET_KEY = "ad241ds546Zz65d*sQs)$s!qzQSds$qsd"
 class BaseConfig(object):
     DEBUG = True
     #MONGO Configuration
-    MONGODB_HOST = os.environ['MONGO_URI']
+    MONGODB_HOST = 'mongodb+srv://admin:M2EjNAdUb5mSTgy@angular-news.5hyda.mongodb.net/todo?retryWrites=true&w=majority'
 
 
 class DevelopmentConfig(BaseConfig):
